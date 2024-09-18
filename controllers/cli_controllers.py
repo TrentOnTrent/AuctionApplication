@@ -1,6 +1,6 @@
 from flask import Blueprint
 from init import db
-from models import user
+from models import user, auction
 
 db_commands = Blueprint("db", __name__)
 

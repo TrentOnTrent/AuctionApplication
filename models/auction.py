@@ -5,11 +5,11 @@ class Auction(db.Model):
     __tablename__ = "auctions"
     id = db.Column(db.Integer, primary_key=True)
     created_user_id = db.Column(db.Integer, nullable=False)
-    title = db.Column(db.string, nullable=False)
-    description = db.Column(db.string)
-    status = db.Column(db.string)
-    current_price = db.Column(db.float)
-    created_at= db.column(db.DateTime)
+    title = db.Column(db.String, nullable=False)
+    description = db.Column(db.String)
+    status = db.Column(db.String)
+    current_price = db.Column(db.Float)
+    created_at= db.Column(db.DateTime)
 
     class UserSchema(ma.Schema):
         class Meta:
