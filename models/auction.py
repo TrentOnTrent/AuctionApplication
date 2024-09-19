@@ -8,7 +8,7 @@ class Auction(db.Model):
     title = db.Column(db.String, nullable=False)
     description = db.Column(db.String)
     status = db.Column(db.String)
-    current_price = db.Column(db.Float)
+    current_price = db.Column(db.Float, nullable=False)
     created_at= db.Column(db.DateTime)
 
     class UserSchema(ma.Schema):
