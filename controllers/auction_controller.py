@@ -1,8 +1,10 @@
 from flask import Blueprint, request
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from models.auction import Auction, auction_schema, auctions_schema
-from init import bcrypt, db
+from init import db
 from datetime import datetime
+from sqlalchemy.exc import IntegrityError
+from psycopg2 import errorcodes
 
 auction_bp = Blueprint("auctions", __name__, url_prefix="/auctions")
 
@@ -42,11 +44,29 @@ def create_auction():
 
         return auction_schema.dump(auction), 200
     
-    #except IntegrityError as err:
+    except IntegrityError as err:
         if err.orig.pgcode == errorcodes.NOT_NULL_VIOLATION:
             return {"Error": f"Missing required field: {err.orig.diag.column_name}"}, 400
         
         if err.orig.pgcode == errorcodes.UNIQUE_VIOLATION:
             return {"Error": f"Field not unique"}, 400
-    finally:
-        pass
+        
+@auction_bp.route("/<int:auction_id>", methods=["PUT", "PATCH"])
+@jwt_required()
+def edit_auction(auction_id):
+    stmt = db.select(Auction).filter_by(id=auction_id)
+    auction = db.session.scalar(stmt)
+    current_user = get_jwt_identity()
+    if str(auction.created_user_id) != current_user:
+        return {"Error": f"Not authorised to edit card id {auction_id}"}, 400
+    
+    if auction:
+        body = request.get_json()
+        auction.description = body.get("description") or auction.description
+        auction.status = body.get("status") or auction.status
+        return auction_schema.dump(auction)
+    else:
+        return {"Error": f"Card id {auction_id} not found"}, 400
+    
+    
+
