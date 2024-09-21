@@ -1,6 +1,7 @@
 from flask import Blueprint, request
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from models.auction import Auction, auction_schema, auctions_schema
+from models.user import User
 from init import db
 from datetime import datetime
 from sqlalchemy.exc import IntegrityError
@@ -57,16 +58,34 @@ def edit_auction(auction_id):
     stmt = db.select(Auction).filter_by(id=auction_id)
     auction = db.session.scalar(stmt)
     current_user = get_jwt_identity()
-    if str(auction.created_user_id) != current_user:
+    userstmt = db.select(User).filter_by(id=current_user)
+    current_user_admin = db.session.scalar(userstmt)
+    if str(auction.created_user_id) != current_user and current_user_admin.admin_role == False:
         return {"Error": f"Not authorised to edit card id {auction_id}"}, 400
     
     if auction:
         body = request.get_json()
         auction.description = body.get("description") or auction.description
         auction.status = body.get("status") or auction.status
+        db.session.add(auction)
+        db.session.commit()
         return auction_schema.dump(auction)
     else:
-        return {"Error": f"Card id {auction_id} not found"}, 400
+        return {"Error": f"Card id {auction_id} not found"}, 404
     
-    
+@auction_bp.route("/<int:auction_id>", methods=["DELETE"])
+@jwt_required()
+def delete_auction(auction_id):
+    stmt = db.select(Auction).filter_by(id=auction_id)
+    auction = db.session.scalar(stmt)
+    current_user = get_jwt_identity()
+    userstmt = db.select(User).filter_by(id=current_user)
+    current_user_admin = db.session.scalar(userstmt)
+    if str(auction.created_user_id) != current_user and current_user_admin.admin_role == False:
+        return {"Error": f"Not authorised to delete card id {auction_id}"}, 400
 
+    if auction:
+        db.session.delete(auction)
+        db.session.commit()
+    else:
+        return {"Error": f"Card id {auction_id} not found"}, 404
