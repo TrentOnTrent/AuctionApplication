@@ -12,12 +12,12 @@ class Bid(db.Model):
     user = db.relationship("User", back_populates="bids")
     auction = db.relationship("Auction", back_populates="bids")
     
-    class UserSchema(ma.Schema):
-        user = fields.Nested("UserSchema", only=["id", "email", "username"])
-        auction = fields.Nested("AuctionSchema")
+class BidSchema(ma.Schema):
+    user = fields.Nested("UserSchema", only=["id", "email", "username"])
+    auction = fields.Nested("AuctionSchema")
 
-        class Meta:
-            fields = ("id", "auction", "user", "created_at", "amount")
-    
-    user_schema = UserSchema()
-    users_schema = UserSchema(many=True)
+    class Meta:
+        fields = ("id", "auction", "user", "created_at", "amount")
+
+bid_schema = BidSchema()
+bids_schema = BidSchema(many=True)

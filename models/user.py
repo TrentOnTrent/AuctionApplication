@@ -17,7 +17,7 @@ class UserSchema(ma.Schema):
     bids = fields.List(fields.Nested("BidSchema", only=["created_at", "amount"]))
     
     class Meta:
-        fields = ("id", "username", "password", "admin_role", "auctions", "bids")
+        fields = ("id", "username", "email", "password", "admin_role", "auctions", "bids")
 
 user_schema = UserSchema(exclude=["password"])
-users_schema = UserSchema(many=True, exclude=["password"])
+users_schema = UserSchema(exclude=["password"], many=True)

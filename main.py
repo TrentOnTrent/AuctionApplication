@@ -4,6 +4,7 @@ from flask import Flask
 from init import db, ma, bcrypt, jwt
 from controllers.cli_controllers import db_commands
 from controllers.auth_controller import auth_bp
+from controllers.auction_controller import auction_bp
 
 def create_app():
     app = Flask(__name__)
@@ -30,5 +31,5 @@ def create_app():
 
     app.register_blueprint(db_commands)
     app.register_blueprint(auth_bp)
-    # app.register_blueprint(cards_bp)
+    app.register_blueprint(auction_bp)
     return app

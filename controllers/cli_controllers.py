@@ -53,7 +53,8 @@ def seed_tables():
     ]
     db.session.add_all(auctions)
 
-    bids = [Bid(
+    bids = [
+        Bid(
                 auction = auctions[0],
                 user = users[0],
                 amount = 2

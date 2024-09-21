@@ -14,12 +14,12 @@ class Auction(db.Model):
     user = db.relationship("User", back_populates = "auctions")
     bids = db.relationship("Bid", back_populates = "auction")
 
-    class AuctionSchema(ma.Schema):
-        bids = fields.List(fields.Nested("BidSchema", only= ["created_at", "amount"]))
-        user = fields.Nested("UserSchema", only=["id", "email", "username"])
-        
-        class Meta:   
-            fields = ("id", "user", "title", "description", "status", "current_price", "created_at")
+class AuctionSchema(ma.Schema):
+    bids = fields.List(fields.Nested("BidSchema", only=["created_at", "amount"]))
+    user = fields.Nested("UserSchema", only=["id", "email", "username"])
     
-    auction_schema = AuctionSchema()
-    auctions_schema = AuctionSchema(many=True)
+    class Meta:   
+        fields = ("id", "user", "bids", "title", "description", "status", "current_price", "created_at")
+
+auction_schema = AuctionSchema()
+auctions_schema = AuctionSchema(many=True)
