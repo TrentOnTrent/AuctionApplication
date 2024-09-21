@@ -15,8 +15,8 @@ class Auction(db.Model):
 
     class AuctionSchema(ma.Schema):
         user = fields.Nested("UserSchema", only=["id", "email", "username"])
-
-        class Meta:
+        
+        class Meta:   
             fields = ("id", "user", "title", "description", "status", "current_price", "created_at")
     
     auction_schema = AuctionSchema()
