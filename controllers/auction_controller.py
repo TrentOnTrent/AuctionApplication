@@ -6,8 +6,10 @@ from init import db
 from datetime import datetime
 from sqlalchemy.exc import IntegrityError
 from psycopg2 import errorcodes
+from controllers.bids_controller import bids_bp
 
 auction_bp = Blueprint("auctions", __name__, url_prefix="/auctions")
+auction_bp.register_blueprint(bids_bp)
 
 @auction_bp.route("/")
 def get_all_auctions():
