@@ -1,5 +1,9 @@
 from init import db, ma
 from marshmallow import fields
+from marshmallow.validate import OneOf
+
+
+VALID_STATUSES = ("In Progress", "Completed")
 
 class Auction(db.Model):
     __tablename__ = "auctions"
@@ -18,6 +22,7 @@ class AuctionSchema(ma.Schema):
     bids = fields.List(fields.Nested("BidSchema", only=["created_at", "amount"]))
     user = fields.Nested("UserSchema", only=["id", "email", "username"])
     
+    status = fields.String(validate=OneOf(VALID_STATUSES))
     class Meta:   
         fields = ("id", "user", "bids", "title", "description", "status", "current_price", "created_at")
 

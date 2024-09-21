@@ -21,7 +21,7 @@ def create_bid(auction_id):
         return {"Error": f"Card id {auction_id} not found"}, 404
     
     if auction.current_price > float(body.get("price")):
-        return {"Error": "Bid price not higher than current price"}
+        return {"Error": "Bid price not higher than current price"}, 400
     
     user = get_jwt_identity()
     if int(user) == auction.created_user_id:
@@ -47,3 +47,5 @@ def create_bid(auction_id):
     db.session.commit()
 
     return bid_schema.dump(bid), 200
+
+# No route for editing or deleting bid intentionally
