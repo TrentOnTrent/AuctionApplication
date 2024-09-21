@@ -87,5 +87,6 @@ def delete_auction(auction_id):
     if auction:
         db.session.delete(auction)
         db.session.commit()
+        return {"Success": f"Card id {auction_id} deleted!"}, 200
     else:
         return {"Error": f"Card id {auction_id} not found"}, 404
