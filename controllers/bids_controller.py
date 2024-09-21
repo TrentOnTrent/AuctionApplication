@@ -16,7 +16,6 @@ def create_bid(auction_id):
     body = request.get_json()
     stmt = db.select(Auction).filter_by(id=auction_id)
     auction = db.session.scalar(stmt)
-    print (auction)
 
     if not auction:
         return {"Error": f"Card id {auction_id} not found"}, 404
@@ -25,11 +24,11 @@ def create_bid(auction_id):
         return {"Error": "Bid price not higher than current price"}
     
     user = get_jwt_identity()
-    if user == auction.created_user_id:
-        return {"Error": "Cannot bid on own auction"}
+    if int(user) == auction.created_user_id:
+        return {"Error": "Cannot bid on own auction"}, 400
 
     if auction.status != "In Progress":
-        return {"Error": "Auction is not in progress"}
+        return {"Error": "Auction is not in progress"}, 400
     
     bid = Bid(
         auction_id = auction_id,
@@ -39,6 +38,12 @@ def create_bid(auction_id):
     )
 
     db.session.add(bid)
+
+    # Updating current price of auction to new bid amount
+    auction.current_price = bid.amount
+
+    db.session.add(auction)
+
     db.session.commit()
 
     return bid_schema.dump(bid), 200
