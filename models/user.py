@@ -1,4 +1,5 @@
 from init import db, ma
+from marshmallow import fields
 
 class User(db.Model):
     __tablename__ = "users"
@@ -8,7 +9,11 @@ class User(db.Model):
     password = db.Column(db.String, nullable=False)
     admin_role = db.Column(db.Boolean)
 
+    auctions = db.relationship("Auction", back_populates = "user")
+    
 class UserSchema(ma.Schema):
+    auctions = fields.List(fields.Nested("AuctionSchema", exclude=["user"]))
+    
     class Meta:
         fields = ("id", "username", "password", "admin_role", "watchlist")
 
