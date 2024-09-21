@@ -12,8 +12,10 @@ class Auction(db.Model):
     created_at= db.Column(db.DateTime)
 
     user = db.relationship("User", back_populates = "auctions")
+    bids = db.relationship("Bid", back_populates = "auction")
 
     class AuctionSchema(ma.Schema):
+        bids = fields.List(fields.Nested("BidSchema", only= ["created_at", "amount"]))
         user = fields.Nested("UserSchema", only=["id", "email", "username"])
         
         class Meta:   

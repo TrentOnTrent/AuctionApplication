@@ -2,6 +2,7 @@ from flask import Blueprint
 from init import db, bcrypt
 from models.user import User
 from models.auction import Auction
+from models.bid import Bid
 
 db_commands = Blueprint("db", __name__)
 
@@ -52,6 +53,22 @@ def seed_tables():
     ]
     db.session.add_all(auctions)
 
+    bids = [Bid(
+                auction = auctions[0],
+                user = users[0],
+                amount = 2
+            ), 
+            Bid(
+                auction = auctions[0],
+                user = users[0],
+                amount = 3
+            ), 
+            Bid(
+                auction = auctions[0],
+                user = users[0],
+                amount = 4
+            )]
+    db.session.add_all(bids)
     db.session.commit()
     
     print("Users and auctions created")
