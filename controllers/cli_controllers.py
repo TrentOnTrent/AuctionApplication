@@ -27,6 +27,12 @@ def seed_tables():
             username = "User 1",
             password = bcrypt.generate_password_hash("password").decode("utf-8"),
             admin_role = False
+        ),
+        User(
+            email = "user2@auction.com",
+            username = "User 2",
+            password = bcrypt.generate_password_hash("password").decode("utf-8"),
+            admin_role = False
         )
     ]
     db.session.add_all(users)
@@ -72,30 +78,42 @@ def seed_tables():
                 amount = 4
             )]
     db.session.add_all(bids)
-    db.session.commit()
     print ("Bids created")
     watchlists = [
         Watchlist(
-            user_id = users[0].id,
+            user= users[2],
             title = "Test Title",
             description = "Test Description"
         ),
         Watchlist(
-            user_id = users[0].id,
+            user= users[2],
             title = "Test Title 2",
             description = "Test Description"
         ),
         Watchlist(
-            user_id = users[0].id,
+            user = users[2],
             title = "Test Title 3",
             description = "Test Description"
         ),
-        
     ]
     db.session.add_all(watchlists)
-    db.session.commit()
+    watchlist_auctions = [
+        Watchlist_Auction(
+            watchlists = watchlists[0],
+            auctions = auctions[0]
+        ),
+        Watchlist_Auction(
+            watchlists = watchlists[0],
+            auctions = auctions[1]
+        ),
+        Watchlist_Auction(
+            watchlists = watchlists[0],
+            auctions = auctions[2]
+        ),
+    ]
+    db.session.add_all(watchlist_auctions)
     print("Watchlists created")
-
+    db.session.commit()
 
 @db_commands.cli.command("drop")
 def delete_tables():

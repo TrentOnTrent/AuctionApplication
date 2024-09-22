@@ -24,9 +24,10 @@ class AuctionSchema(ma.Schema):
     bids = fields.List(fields.Nested("BidSchema", only=["created_at", "amount"]))
     user = fields.Nested("UserSchema", only=["id", "email", "username"])
     
+    watchlists_auctions = fields.List(fields.Nested("Watchlist_AuctionSchema"))
     status = fields.String(validate=OneOf(VALID_STATUSES))
     class Meta:   
-        fields = ("id", "user", "bids", "title", "description", "status", "current_price", "created_at")
+        fields = ("id", "user", "bids", "title", "description", "status", "current_price", "created_at", "watchlist_auctions")
 
 auction_schema = AuctionSchema()
 auctions_schema = AuctionSchema(many=True)

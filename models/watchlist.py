@@ -12,9 +12,9 @@ class Watchlist(db.Model):
     watchlists_auctions = db.relationship("Watchlist_Auction", back_populates="watchlists")
 
 class WatchlistSchema(ma.Schema):
-
+    watchlists_auctions = fields.List(fields.Nested("Watchlist_AuctionSchema"))
     class Meta:
-        fields = ("id", "user_id", "title", "description")
+        fields = ("id", "user_id", "title", "description", "watchlists_auctions")
 
 watchlist_schema = WatchlistSchema()
 watchlists_schema = WatchlistSchema(many=True)
