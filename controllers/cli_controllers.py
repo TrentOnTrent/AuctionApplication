@@ -99,16 +99,16 @@ def seed_tables():
     db.session.add_all(watchlists)
     watchlist_auctions = [
         Watchlist_Auction(
-            watchlists = watchlists[0],
-            auctions = auctions[0]
+            watchlist = watchlists[0],
+            auction = auctions[0]
         ),
         Watchlist_Auction(
-            watchlists = watchlists[0],
-            auctions = auctions[1]
+            watchlist = watchlists[0],
+            auction = auctions[1]
         ),
         Watchlist_Auction(
-            watchlists = watchlists[0],
-            auctions = auctions[2]
+            watchlist = watchlists[0],
+            auction = auctions[2]
         ),
     ]
     db.session.add_all(watchlist_auctions)

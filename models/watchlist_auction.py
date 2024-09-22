@@ -7,12 +7,12 @@ class Watchlist_Auction(db.Model):
     watchlist_id = db.Column(db.Integer, db.ForeignKey("watchlists.id"), nullable=False)
     auction_id = db.Column(db.Integer, db.ForeignKey("auctions.id"), nullable=False)
 
-    watchlists = db.relationship("Watchlist", back_populates="watchlists_auctions")
-    auctions = db.relationship("Auction", back_populates = "watchlists_auctions")
+    watchlist = db.relationship("Watchlist", back_populates="watchlists_auctions")
+    auction = db.relationship("Auction", back_populates = "watchlists_auctions")
 
 class Watchlist_AuctionSchema(ma.Schema):
-    watchlist = fields.Nested("WatchlistSchema")
-    auction = fields.Nested("AuctionSchema")
+    watchlist = fields.Nested("WatchlistSchema", exclude=["watchlists_auctions"])
+    auction = fields.Nested("AuctionSchema", exclude=["watchlists_auctions"])
     class Meta:
         fields = ("watchlist", "auction")
 

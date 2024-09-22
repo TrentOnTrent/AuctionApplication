@@ -18,16 +18,16 @@ class Auction(db.Model):
     user = db.relationship("User", back_populates = "auctions")
     bids = db.relationship("Bid", back_populates = "auction")
 
-    watchlists_auctions = db.relationship("Watchlist_Auction", back_populates = "auctions")
+    watchlists_auctions = db.relationship("Watchlist_Auction", back_populates = "auction")
 
 class AuctionSchema(ma.Schema):
     bids = fields.List(fields.Nested("BidSchema", only=["created_at", "amount"]))
     user = fields.Nested("UserSchema", only=["id", "email", "username"])
     
-    watchlists_auctions = fields.List(fields.Nested("Watchlist_AuctionSchema"))
+    watchlists_auctions = fields.List(fields.Nested("Watchlist_AuctionSchema", only=["watchlist"]))
     status = fields.String(validate=OneOf(VALID_STATUSES))
     class Meta:   
-        fields = ("id", "user", "bids", "title", "description", "status", "current_price", "created_at", "watchlist_auctions")
+        fields = ("id", "user", "bids", "title", "description", "status", "current_price", "created_at", "watchlists_auctions")
 
 auction_schema = AuctionSchema()
 auctions_schema = AuctionSchema(many=True)
