@@ -8,6 +8,7 @@ from sqlalchemy.exc import IntegrityError
 from psycopg2 import errorcodes
 from controllers.bids_controller import bids_bp
 from controllers.watch_controller import watch_bp
+from utils import auth_as_admin_decorator
 
 auction_bp = Blueprint("auctions", __name__, url_prefix="/auctions")
 auction_bp.register_blueprint(watch_bp)
@@ -80,18 +81,14 @@ def edit_auction(auction_id):
     
 @auction_bp.route("/<int:auction_id>", methods=["DELETE"])
 @jwt_required()
+@auth_as_admin_decorator()
 def delete_auction(auction_id):
     stmt = db.select(Auction).filter_by(id=auction_id)
     auction = db.session.scalar(stmt)
-    current_user = get_jwt_identity()
-    userstmt = db.select(User).filter_by(id=current_user)
-    current_user_admin = db.session.scalar(userstmt)
-    if str(auction.created_user_id) != current_user and current_user_admin.admin_role == False:
-        return {"Error": f"Not authorised to delete card id {auction_id}"}, 400
 
     if auction:
         db.session.delete(auction)
         db.session.commit()
-        return {"Success": f"Card id {auction_id} deleted!"}, 200
+        return {"Success": f"Auction id {auction_id} deleted!"}, 200
     else:
-        return {"Error": f"Card id {auction_id} not found"}, 404
+        return {"Error": f"Auction id {auction_id} not found"}, 404
