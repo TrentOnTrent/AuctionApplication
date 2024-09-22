@@ -6,6 +6,7 @@ from controllers.cli_controllers import db_commands
 from controllers.auth_controller import auth_bp
 from controllers.auction_controller import auction_bp
 from controllers.bids_controller import bids_bp
+from controllers.watch_controller import watch_bp, watchlist_bp
 
 def create_app():
     app = Flask(__name__)
@@ -34,4 +35,6 @@ def create_app():
     app.register_blueprint(auth_bp)
     app.register_blueprint(auction_bp)
     app.register_blueprint(bids_bp)
+    app.register_blueprint(watch_bp)
+    app.register_blueprint(watchlist_bp)
     return app

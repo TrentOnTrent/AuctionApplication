@@ -18,6 +18,8 @@ class Auction(db.Model):
     user = db.relationship("User", back_populates = "auctions")
     bids = db.relationship("Bid", back_populates = "auction")
 
+    watchlists_auctions = db.relationship("Watchlist_Auction", back_populates = "auctions")
+
 class AuctionSchema(ma.Schema):
     bids = fields.List(fields.Nested("BidSchema", only=["created_at", "amount"]))
     user = fields.Nested("UserSchema", only=["id", "email", "username"])

@@ -3,6 +3,8 @@ from init import db, bcrypt
 from models.user import User
 from models.auction import Auction
 from models.bid import Bid
+from models.watchlist import Watchlist
+from models.watchlist_auction import Watchlist_Auction
 
 db_commands = Blueprint("db", __name__)
 
@@ -52,7 +54,7 @@ def seed_tables():
         ), 
     ]
     db.session.add_all(auctions)
-
+    print ("Auctions created")
     bids = [
         Bid(
                 auction = auctions[0],
@@ -71,8 +73,28 @@ def seed_tables():
             )]
     db.session.add_all(bids)
     db.session.commit()
-    
-    print("Users and auctions created")
+    print ("Bids created")
+    watchlists = [
+        Watchlist(
+            user_id = users[0].id,
+            title = "Test Title",
+            description = "Test Description"
+        ),
+        Watchlist(
+            user_id = users[0].id,
+            title = "Test Title 2",
+            description = "Test Description"
+        ),
+        Watchlist(
+            user_id = users[0].id,
+            title = "Test Title 3",
+            description = "Test Description"
+        ),
+        
+    ]
+    db.session.add_all(watchlists)
+    db.session.commit()
+    print("Watchlists created")
 
 
 @db_commands.cli.command("drop")

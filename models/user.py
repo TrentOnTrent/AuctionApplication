@@ -11,6 +11,8 @@ class User(db.Model):
 
     auctions = db.relationship("Auction", back_populates = "user")
     bids = db.relationship("Bid", back_populates = "user")
+    watchlists = db.relationship("Watchlist", back_populates = "user")
+
     
 class UserSchema(ma.Schema):
     auctions = fields.List(fields.Nested("AuctionSchema", exclude=["user"]))
