@@ -71,3 +71,17 @@ def get_watchlist(watchlist_id):
     else:
         return watchlist_schema.dump(watchlist)
     
+@watchlist_bp.route("/<int:watchlist_id>", methods=["DELETE"])
+@jwt_required()
+def delete_watchlist(watchlist_id):
+    stmt = db.select(Watchlist).filter_by(id=watchlist_id)
+    watchlist = db.session.scalar(stmt)
+    user = get_jwt_identity()
+    if not watchlist:
+        return {"Error": f"Watchlist id {watchlist_id} not found"}, 400
+    if str(watchlist.user_id) != user:
+        return {"Error": f"Watchlist does not belong to user {user}"}, 400
+    else:
+        db.session.delete(watchlist)
+        db.session.commit()
+        return {"Success": f"Watchlist id {watchlist_id} deleted!"}, 200
