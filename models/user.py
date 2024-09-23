@@ -9,9 +9,9 @@ class User(db.Model):
     password = db.Column(db.String, nullable=False)
     admin_role = db.Column(db.Boolean)
 
-    auctions = db.relationship("Auction", back_populates = "user")
-    bids = db.relationship("Bid", back_populates = "user")
-    watchlists = db.relationship("Watchlist", back_populates = "user")
+    auctions = db.relationship("Auction", back_populates = "user", cascade="all, delete")
+    bids = db.relationship("Bid", back_populates = "user", cascade="all, delete")
+    watchlists = db.relationship("Watchlist", back_populates = "user", cascade="all, delete")
 
     
 class UserSchema(ma.Schema):

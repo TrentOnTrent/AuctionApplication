@@ -81,7 +81,7 @@ def edit_auction(auction_id):
     
 @auction_bp.route("/<int:auction_id>", methods=["DELETE"])
 @jwt_required()
-@auth_as_admin_decorator()
+@auth_as_admin_decorator
 def delete_auction(auction_id):
     stmt = db.select(Auction).filter_by(id=auction_id)
     auction = db.session.scalar(stmt)
