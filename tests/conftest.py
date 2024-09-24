@@ -3,6 +3,8 @@ import os
 from main import create_app
 from init import db, ma, bcrypt, jwt
 from models.user import User
+from models.auction import Auction
+from models.bid import Bid
 from flask import Flask
 from controllers.auth_controller import auth_bp
 from controllers.auction_controller import auction_bp
@@ -28,7 +30,33 @@ def app():
         # Drops tables for test database
         db.drop_all()
 
-@pytest.fixture(scope='module')
-def new_user():
+@pytest.fixture()
+def new_user(app):
     user = User(email="unittest@test.com", username="unittest", password="unittestpassword")
+    with app.app_context():
+        db.session.add(user)
+        db.session.commit()
     return user
+
+@pytest.fixture()
+def new_auction(app):
+    with app.app_context():
+        stmt = db.select(User).filter_by(id=1)
+        user = db.session.scalar(stmt)
+        auction = Auction(title="test auction", description="test auction description", status="test status", user=user, current_price=100)
+        db.session.add(auction)
+        db.session.commit()
+    return auction
+
+@pytest.fixture()
+def new_bid(app):
+    with app.app_context():
+        stmt = db.select(User).filter_by(id=1)
+        user = db.session.scalar(stmt)
+        stmt = db.select(Auction).filter_by(id=1)
+        auction = db.session.scalar(stmt)
+        db.session.add(auction)
+        bid = Bid(amount=100, auction=auction, user=user)
+        db.session.add(bid)
+        db.session.commit()
+    return bid
