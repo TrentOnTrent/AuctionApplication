@@ -31,6 +31,17 @@ def app():
         db.drop_all()
 
 @pytest.fixture()
+def client(app):
+    app.register_blueprint(auth_bp)
+    app.register_blueprint(auction_bp)
+    app.register_blueprint(bids_bp)
+    app.register_blueprint(watch_bp)
+    app.register_blueprint(watchlist_bp)
+    with app.test_client() as client:
+        yield client
+
+
+@pytest.fixture()
 def new_user(app):
     user = User(email="unittest@test.com", username="unittest", password="unittestpassword")
     with app.app_context():
