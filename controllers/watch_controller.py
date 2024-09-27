@@ -17,6 +17,7 @@ watchlist_bp = Blueprint("watchlist", __name__, url_prefix="/watchlist")
 @jwt_required()
 def create_watch(auction_id):
     body = request.get_json()
+    # Execute the SQL query to fetch the auction in URL
     stmt = db.select(Auction).filter_by(id=auction_id)
     auction = db.session.scalar(stmt)
 
@@ -31,7 +32,7 @@ def create_watch(auction_id):
         return {"Error": "Auction is not in progress"}, 400
     
     watchlist_id = body.get("watchlist")
-
+    # Execute the SQL query to fetch the watchlist in URL
     stmt = db.select(Watchlist).filter_by(id=watchlist_id)
     watchlist = db.session.scalar(stmt)
     
@@ -45,6 +46,7 @@ def create_watch(auction_id):
         watchlist_id = watchlist_id,
         auction_id = auction_id
     )
+    # Add the watchlist_auction to the database
     db.session.add(watchlist_auction)
     db.session.commit()
 
@@ -54,6 +56,7 @@ def create_watch(auction_id):
 @jwt_required()
 def get_all_watchlists():
     user = get_jwt_identity()
+    # Execute the SQL query to fetch all watchlists for the current user
     stmt = db.select(Watchlist).filter_by(user_id=user)
     watchlists = db.session.scalars(stmt)
     return watchlists_schema.dump(watchlists)
@@ -61,6 +64,7 @@ def get_all_watchlists():
 @watchlist_bp.route("/<int:watchlist_id>")
 @jwt_required()
 def get_watchlist(watchlist_id):
+    # Execute the SQL query to fetch the watchlist in URL
     stmt = db.select(Watchlist).filter_by(id=watchlist_id)
     watchlist = db.session.scalar(stmt)
     user = get_jwt_identity()
@@ -74,6 +78,7 @@ def get_watchlist(watchlist_id):
 @watchlist_bp.route("/<int:watchlist_id>", methods=["DELETE"])
 @jwt_required()
 def delete_watchlist(watchlist_id):
+    # Execute the SQL query to fetch the watchlist in URL
     stmt = db.select(Watchlist).filter_by(id=watchlist_id)
     watchlist = db.session.scalar(stmt)
     user = get_jwt_identity()
@@ -82,6 +87,8 @@ def delete_watchlist(watchlist_id):
     if str(watchlist.user_id) != user:
         return {"Error": f"Watchlist does not belong to user {user}"}, 400
     else:
+        # Delete the watchlist from the database
         db.session.delete(watchlist)
+        # Commit the changes to the database
         db.session.commit()
         return {"Success": f"Watchlist id {watchlist_id} deleted!"}, 200

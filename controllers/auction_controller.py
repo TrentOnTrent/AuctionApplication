@@ -17,12 +17,14 @@ auction_bp.register_blueprint(bids_bp)
 
 @auction_bp.route("/")
 def get_all_auctions():
+    # Execute the SQL query to fetch all auctions
     stmt = db.select(Auction)
     auctions = db.session.scalars(stmt)
     return auctions_schema.dump(auctions)
 
 @auction_bp.route("/<int:auction_id>")
 def get_auction(auction_id):
+    # Execute the SQL query to fetch auction in URL
     stmt = db.select(Auction).filter_by(id=auction_id)
     auction = db.session.scalar(stmt)
     if auction:
@@ -35,7 +37,7 @@ def get_auction(auction_id):
 def create_auction():
     try:
         body = request.get_json()
-
+        # Create a new auction object
         auction = Auction (
             created_user_id = get_jwt_identity(),
             title = body.get("title"),
@@ -45,8 +47,9 @@ def create_auction():
             created_at = datetime.now()
 
         )
-
+        # Add the auction to the database
         db.session.add(auction)
+        # Commit the changes to the database
         db.session.commit()
 
         return auction_schema.dump(auction), 200
@@ -61,9 +64,11 @@ def create_auction():
 @auction_bp.route("/<int:auction_id>", methods=["PUT", "PATCH"])
 @jwt_required()
 def edit_auction(auction_id):
+    # Execute the SQL query to fetch the auction in URL
     stmt = db.select(Auction).filter_by(id=auction_id)
     auction = db.session.scalar(stmt)
     current_user = get_jwt_identity()
+    # Fetch the user with the same ID as the current user
     userstmt = db.select(User).filter_by(id=current_user)
     current_user_admin = db.session.scalar(userstmt)
     if str(auction.created_user_id) != current_user and current_user_admin.admin_role == False:
@@ -73,7 +78,9 @@ def edit_auction(auction_id):
         body = request.get_json()
         auction.description = body.get("description") or auction.description
         auction.status = body.get("status") or auction.status
+        # Add the updated auction to the database
         db.session.add(auction)
+        # Commit the changes to the database
         db.session.commit()
         return auction_schema.dump(auction)
     else:
@@ -83,11 +90,14 @@ def edit_auction(auction_id):
 @jwt_required()
 @auth_as_admin_decorator
 def delete_auction(auction_id):
+    # Execute the SQL query to fetch the auction in URL
     stmt = db.select(Auction).filter_by(id=auction_id)
     auction = db.session.scalar(stmt)
 
     if auction:
+        # Delete the auction from the database
         db.session.delete(auction)
+        # Commit the changes to the database
         db.session.commit()
         return {"Success": f"Auction id {auction_id} deleted!"}, 200
     else:

@@ -21,8 +21,9 @@ def register_user():
         password = body.get("password")
         if password:
             user.password = bcrypt.generate_password_hash(password).decode("utf-8")
-
+        # Add the user to the database
         db.session.add(user)
+        # Commit the changes to the database
         db.session.commit()
 
         return user_schema.dump(user), 200
@@ -37,6 +38,7 @@ def register_user():
 @auth_bp.route("/login", methods=["POST"])
 def login_user():
     body = request.get_json()
+    # Execute the SQL query to fetch the user with the same email as login data
     stmt = db.select(User).filter_by(email=body.get("email"))
     user = db.session.scalar(stmt)
 

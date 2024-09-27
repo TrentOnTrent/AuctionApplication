@@ -10,6 +10,7 @@ db_commands = Blueprint("db", __name__)
 
 @db_commands.cli.command("create")
 def create_tables():
+    # Creates tables for database
     db.create_all()
     print("Tables created!")
 
@@ -35,6 +36,7 @@ def seed_tables():
             admin_role = False
         )
     ]
+    # Add users to the database
     db.session.add_all(users)
     auctions = [
         Auction(
@@ -59,6 +61,7 @@ def seed_tables():
             current_price = "10.50",
         ), 
     ]
+    # Add auctions to the database
     db.session.add_all(auctions)
     print ("Auctions created")
     bids = [
@@ -77,6 +80,7 @@ def seed_tables():
                 user = users[0],
                 amount = 4
             )]
+    # Add bids to the database
     db.session.add_all(bids)
     print ("Bids created")
     watchlists = [
@@ -96,6 +100,7 @@ def seed_tables():
             description = "Test Description"
         ),
     ]
+    # Add watchlists to the database
     db.session.add_all(watchlists)
     watchlist_auctions = [
         Watchlist_Auction(
@@ -111,11 +116,14 @@ def seed_tables():
             auction = auctions[2]
         ),
     ]
+    # Add watchlist_auctions to the database
     db.session.add_all(watchlist_auctions)
     print("Watchlists created")
+    # Commit the changes to the database
     db.session.commit()
 
 @db_commands.cli.command("drop")
 def delete_tables():
+    # Drops tables for database
     db.drop_all()
     print("Tables dropped!")

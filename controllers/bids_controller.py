@@ -14,6 +14,7 @@ bids_bp = Blueprint("bids", __name__, url_prefix="/<int:auction_id>/bids")
 @jwt_required()
 def create_bid(auction_id):
     body = request.get_json()
+    # Execute the SQL query to fetch the auction in URL
     stmt = db.select(Auction).filter_by(id=auction_id)
     auction = db.session.scalar(stmt)
 
@@ -35,15 +36,17 @@ def create_bid(auction_id):
         user_id = user,
         created_at = datetime.now(),
         amount = body.get("price")
-    )
-
+    )   
+    # Add the bid to the database
     db.session.add(bid)
 
     # Updating current price of auction to new bid amount
     auction.current_price = bid.amount
 
+    # Add the auction to the database
     db.session.add(auction)
 
+    # Commit the changes to the database
     db.session.commit()
 
     return bid_schema.dump(bid), 200
