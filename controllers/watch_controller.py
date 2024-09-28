@@ -40,7 +40,7 @@ def create_watch(auction_id):
         return {"Error": f"Watchlist id {watchlist_id} not found"}, 404
 
     if str(watchlist.user_id) != user:
-        return {"Error": "Cannot add item to other user's watchlist"}, 400
+        return {"Error": "Cannot add item to other user's watchlist"}, 403
 
     watchlist_auction = Watchlist_Auction(
         watchlist_id = watchlist_id,
@@ -59,7 +59,7 @@ def get_all_watchlists():
     # Execute the SQL query to fetch all watchlists for the current user
     stmt = db.select(Watchlist).filter_by(user_id=user)
     watchlists = db.session.scalars(stmt)
-    return watchlists_schema.dump(watchlists)
+    return watchlists_schema.dump(watchlists), 200
 
 @watchlist_bp.route("/<int:watchlist_id>")
 @jwt_required()
@@ -69,11 +69,11 @@ def get_watchlist(watchlist_id):
     watchlist = db.session.scalar(stmt)
     user = get_jwt_identity()
     if not watchlist:
-        return {"Error": f"Watchlist id {watchlist_id} not found"}, 400
+        return {"Error": f"Watchlist id {watchlist_id} not found"}, 404
     if str(watchlist.user_id) != user:
-        return {"Error": f"Watchlist does not belong to user {user}"}, 400
+        return {"Error": f"Watchlist does not belong to user {user}"}, 403
     else:
-        return watchlist_schema.dump(watchlist)
+        return watchlist_schema.dump(watchlist), 200
     
 @watchlist_bp.route("/<int:watchlist_id>", methods=["DELETE"])
 @jwt_required()
@@ -83,9 +83,9 @@ def delete_watchlist(watchlist_id):
     watchlist = db.session.scalar(stmt)
     user = get_jwt_identity()
     if not watchlist:
-        return {"Error": f"Watchlist id {watchlist_id} not found"}, 400
+        return {"Error": f"Watchlist id {watchlist_id} not found"}, 404
     if str(watchlist.user_id) != user:
-        return {"Error": f"Watchlist does not belong to user {user}"}, 400
+        return {"Error": f"Watchlist does not belong to user {user}"}, 403
     else:
         # Delete the watchlist from the database
         db.session.delete(watchlist)

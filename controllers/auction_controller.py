@@ -28,9 +28,9 @@ def get_auction(auction_id):
     stmt = db.select(Auction).filter_by(id=auction_id)
     auction = db.session.scalar(stmt)
     if auction:
-        return auction_schema.dump(auction)
+        return auction_schema.dump(auction), 200
     else:
-        return {"Error": f"Card id {auction_id} not found"}, 400
+        return {"Error": f"Card id {auction_id} not found"}, 404
 
 @auction_bp.route("/", methods=["POST"])
 @jwt_required()
@@ -72,7 +72,7 @@ def edit_auction(auction_id):
     userstmt = db.select(User).filter_by(id=current_user)
     current_user_admin = db.session.scalar(userstmt)
     if str(auction.created_user_id) != current_user and current_user_admin.admin_role == False:
-        return {"Error": f"Not authorised to edit card id {auction_id}"}, 400
+        return {"Error": f"Not authorised to edit card id {auction_id}"}, 403
     
     if auction:
         body = request.get_json()
@@ -82,7 +82,7 @@ def edit_auction(auction_id):
         db.session.add(auction)
         # Commit the changes to the database
         db.session.commit()
-        return auction_schema.dump(auction)
+        return auction_schema.dump(auction), 200
     else:
         return {"Error": f"Card id {auction_id} not found"}, 404
     
