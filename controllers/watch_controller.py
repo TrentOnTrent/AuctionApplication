@@ -61,6 +61,23 @@ def get_all_watchlists():
     watchlists = db.session.scalars(stmt)
     return watchlists_schema.dump(watchlists), 200
 
+@watchlist_bp.route("/", methods=["POST"])
+@jwt_required()
+def create_watchlist():
+    body = request.get_json()
+    # Create a new watchlist object
+    watchlist = Watchlist(
+        user_id = get_jwt_identity(),
+        title = body.get("title"),
+        description = body.get("description")
+    )
+    # Add the watchlist to the database
+    db.session.add(watchlist)
+    # Commit the changes to the database
+    db.session.commit()
+
+    return watchlist_schema.dump(watchlist), 200
+
 @watchlist_bp.route("/<int:watchlist_id>")
 @jwt_required()
 def get_watchlist(watchlist_id):

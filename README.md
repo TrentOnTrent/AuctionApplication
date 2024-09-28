@@ -21,3 +21,30 @@ SQLAlchemy provides a range of functionalities, including defining models as Pyt
 ## Models and relationships
 
 ## API endpoints
+- GET /auctions
+Returns all auctions in database
+- GET /auctions/id
+Returns auction with specific id
+- POST /auctions
+Creates new auction (requires JWT token)
+- PUT /auctions/id
+Edits auction with specific id (requires JWT token)
+- PATCH /auctions/id
+Edits auction with specific id (requires JWT token)
+- DELETE /auctions/id
+Deletes auction with specific id (requires JWT token and admin role)
+- POST /auctions/id/bids
+Creates new bid for auction with specific id (requires JWT token)
+- POST /auctions/id/watch
+Adds auction id to watchlist specified in body (requires JWT token)
+- DELETE /auctions/id/watch
+Removes auction id from watchlist specified in body (requires JWT token)
+- GET /watchlist
+Returns all watchlists for current user
+- POST /watchlist
+Creates new watchlist for current user (requires JWT token)
+- GET /watchlist/id
+Returns watchlist with specific id
+- DELETE /watchlist/id
+Deletes watchlist with specific id (requires JWT token)
+
