@@ -5,6 +5,7 @@ from init import db, ma, bcrypt, jwt
 from models.user import User
 from models.auction import Auction
 from models.bid import Bid
+from models.watchlist import Watchlist
 from flask import Flask
 from controllers.auth_controller import auth_bp
 from controllers.auction_controller import auction_bp
@@ -40,14 +41,22 @@ def client(app):
     with app.test_client() as client:
         yield client
 
-
 @pytest.fixture()
 def new_user(app):
-    user = User(email="unittest@test.com", username="unittest", password="unittestpassword")
+    user = User(email="unittest@test.com", username="unittest", password="unittestpassword", admin_role=True)
     with app.app_context():
         db.session.add(user)
         db.session.commit()
     return user
+
+@pytest.fixture()
+def new_watchlist(app):
+    with app.app_context():
+        stmt = db.select(User).filter_by(id=1)
+        user = db.session.scalar(stmt)
+        watchlist = Watchlist(title="test watchlist", description="test watchlist description", user=user)
+        db.session.add(watchlist)
+        db.session.commit()
 
 @pytest.fixture()
 def new_auction(app):

@@ -30,3 +30,11 @@ def test_edit_auction(new_user, new_auction, client, app):
     test_auction = db.session.scalar(stmt)
     assert test_auction.description == "test edit auction description"
     assert test_auction.status == "test edit status"
+
+def test_delete_auction(new_user, new_auction, client, app):
+    with app.app_context():
+        with app.test_request_context():
+            token = create_access_token(identity="1")
+            headers = {"Authorization": f"Bearer {token}"}
+    response = client.delete("/auctions/1", headers=headers)
+    assert response.status_code == 200
