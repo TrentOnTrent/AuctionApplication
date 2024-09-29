@@ -23,7 +23,7 @@ class UserSchema(ma.Schema):
     # Bid fields to include in the serialized output, only including created_at and amount
     bids = fields.List(fields.Nested("BidSchema", only=["created_at", "amount"]))
     # User fields to include in the serialized output, confirming email format
-    email = fields.String(required=True, validate=Regexp("^\S+@\S+\.\S+$", error="Invalid Email Format."))
+    email = fields.String(required=True, validate=Regexp("^\\S+@\\S+\\.\\S+$", error="Invalid Email Format."))
     
     # Meta class to define the fields to include in the serialized output
     class Meta:
