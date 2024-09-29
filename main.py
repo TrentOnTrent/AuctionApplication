@@ -8,6 +8,8 @@ from controllers.auction_controller import auction_bp
 from controllers.bids_controller import bids_bp
 from controllers.watch_controller import watch_bp, watchlist_bp
 
+from marshmallow.exceptions import ValidationError
+
 def create_app():
     app = Flask(__name__)
     app.json.sort_keys = False
@@ -19,17 +21,18 @@ def create_app():
     bcrypt.init_app(app)
     jwt.init_app(app)
 
-    #@app.errorhandler(ValidationError)
-    #def validation_error(err):
-    #    return {"error": err.messages}, 400
+    # Global error handlers
+    @app.errorhandler(ValidationError)
+    def validation_error(err):
+        return {"error": err.messages}, 400
     
-    #@app.errorhandler(400)
-    #def bad_request(err):
-    #    return {"error": err.messages}, 400
+    @app.errorhandler(400)
+    def bad_request(err):
+        return {"error": err.messages}, 400
     
-    #@app.errorhandler(401)
-    #def unauthorised():
-    #    return {"error": "You are not an authorised user."}, 401
+    @app.errorhandler(401)
+    def unauthorised():
+        return {"error": "You are not an authorised user."}, 401
 
     app.register_blueprint(db_commands)
     app.register_blueprint(auth_bp)
