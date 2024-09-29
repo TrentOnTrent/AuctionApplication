@@ -1,5 +1,6 @@
 from init import db, ma
 from marshmallow import fields
+from marshmallow.validate import Regexp
 
 class User(db.Model):
     __tablename__ = "users"
@@ -21,6 +22,9 @@ class UserSchema(ma.Schema):
     auctions = fields.List(fields.Nested("AuctionSchema", exclude=["user"]))
     # Bid fields to include in the serialized output, only including created_at and amount
     bids = fields.List(fields.Nested("BidSchema", only=["created_at", "amount"]))
+    # User fields to include in the serialized output, confirming email format
+    email = fields.String(required=True, validate=Regexp("^\S+@\S+\.\S+$", error="Invalid Email Format."))
+    
     # Meta class to define the fields to include in the serialized output
     class Meta:
         fields = ("id", "username", "email", "password", "admin_role", "auctions", "bids")
