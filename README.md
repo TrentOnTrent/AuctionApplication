@@ -12,30 +12,39 @@ Tasks were planned and allocated using the Kanban board below. The board is divi
   - `flask`
   - `flask.Blueprint`
   - `flask.request`
+
   Flask was used to create the application's routes and handle HTTP requests. It provided a simple and flexible way to define routes and handle different HTTP methods. The `Blueprint` class was used to create separate routes for different functionalities, making it easier to organize and manage the application's routes. The `request` object was used to access information about the incoming request, such as the URL, headers, and query parameters.
 - SQLAlchemy
   - `sqlalchemy`
   - `sqlalchemy.exc.IntegrityError`
   - `db`
+
   SQLAlchemy was used to interact with the database. It provided a ORM that was powerful and flexible way to query and manipulate data in the database. The `db` object is initialised in `init.py`, which is then used throughout the application to interact with the database.
 - Psycopg2
   - `psycopg2`
   - `psycopg2.errorcodes`
+
   Psycopg2 was used to interact with the PostgreSQL database. It provided a Python interface to the database, allowing developers to execute SQL queries and manipulate data. The `errorcodes` module was used to handle specific error codes returned by the database.
 - Flask-JWT-Extended
   - `flask_jwt_extended`
   - `flask_jwt_extended.create_access_token`
   - `flask_jwt_extended.get_jwt_identity`
+  - `JWTManager`
+
   Flask-JWT-Extended was used to implement secure authentication and authorisation in the application. It provided a simple and flexible way to create and verify JSON Web Tokens (JWTs), which are used to authenticate and authorise users. The `create_access_token` function was used to create JWTs, and the `get_jwt_identity` function was used to retrieve the user's identity from the JWT.
 - Datetime
   - `datetime`
   - `datetime.timedelta`
+
   The `datetime` module was used to handle date and time operations in the application. The `timedelta` class was used to calculate the difference between two dates.
 - Bcrypt
   - `bcrypt`
+
   The `bcrypt` module is initialised in `init.py` and was used to hash passwords securely. It provides a simple and efficient way to store and verify passwords, making it a popular choice for secure authentication.
 - Marshmallow (used for serialization/deserialization)
   - `marshmallow`
+  - `ma`
+
   Marshmallow was used to serialize and deserialize data in the application. Initialised in init.py as `ma`, it provides a powerful and flexible way to convert Python objects to and from JSON. This was used to convert SQLAlchemy models to JSON objects for serialization and deserialization.
 ## Benefits and drawbacks of database system
 PostgreSQL is a powerful, open-source relational database management system (RDBMS) that offers numerous benefits. Its open-source nature makes it cost-effective, supported by a large and active community that contributes to its ongoing development. The database boasts advanced features like JSONB for handling unstructured data, full-text search, and GIS capabilities through PostGIS, making it highly versatile. Its extensibility allows users to create custom data types, operators, and functions. Additionally, PostgreSQL is ACID compliant, ensuring reliable transactions and data integrity, and it utilizes Multi-Version Concurrency Control (MVCC) for high concurrency without table locking.
