@@ -27,11 +27,11 @@ def create_app():
         return {"error": err.messages}, 400
     
     @app.errorhandler(400)
-    def bad_request(err):
+    def incorrect_request(err):
         return {"error": err.messages}, 400
     
     @app.errorhandler(401)
-    def unauthorised():
+    def unauthorised_request():
         return {"error": "You are not an authorised user."}, 401
 
     app.register_blueprint(db_commands)
